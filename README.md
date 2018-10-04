@@ -47,9 +47,7 @@ cd ~/dev/BESS/tools
 ./build-run.sh
 ```
 ## Use
-The program can be controlled two ways:
-1. The method handlers built into the "Smart Grid Device" that execute when an AllJoyn method call is recieved.
-2. The Command Line Interface (CLI).
+The Command Line Interface (CLI).
 
 ```
         [Help]
