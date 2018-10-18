@@ -42,6 +42,13 @@ cd ~/dev
 git clone https://github.com/Tylores/BESS
 ```
 
+### SunSpec Models
+The last thing that must be added is the sunspec XML models.
+ ``` console
+cd ~/dev/BESS
+git clone https://github.com/sunspec/models
+ ```
+
 ### Setup
 1. Open /BESS/tools/build-run.sh
 2. Modify "CPU" to reflect the system you are working on
