@@ -34,7 +34,7 @@ SunSpecModel::SunSpecModel (unsigned int did, unsigned int offset)
 }
 
 SunSpecModel::~SunSpecModel() {
-};
+}
 
 
 // Block To Points
@@ -201,7 +201,6 @@ std::map <std::string, std::string> SunSpecModel::BlockToPoints (
             }
         }
     }
-
     return point_map;
 };
 
@@ -214,7 +213,8 @@ std::vector <uint16_t> SunSpecModel::PointsToBlock (
     std::string id, type, scaler;
     unsigned int offset;
 
-     // Traverse property tree
+    // Traverse property tree
+    // for each child object create a node object
     BOOST_FOREACH (pt::ptree::value_type const& node,
                    smdx_.get_child ("sunSpecModels.model.block")) {
         pt::ptree subtree = node.second;
@@ -227,39 +227,39 @@ std::vector <uint16_t> SunSpecModel::PointsToBlock (
             // TODO (TS): this should be configured by the smdx file
             if (type == "int16") {
                 float value = std::stof(points[id]);
-                float scale = SunSpecModel::BlockToScaler(register_block,
+                float scale = SunSpecModel::PointsToScaler(points,
                                                           scaler);
                 register_block[offset] = value / scale;
             } else if (type == "uint16") {
                 float value = std::stof(points[id]);
-                float scale = SunSpecModel::BlockToScaler(register_block,
+                float scale = SunSpecModel::PointsToScaler(points,
                                                           scaler);
                 register_block[offset] = value / scale;
             } else if (type == "count") {
                 float value = std::stof(points[id]);
-                float scale = SunSpecModel::BlockToScaler(register_block,
+                float scale = SunSpecModel::PointsToScaler(points,
                                                           scaler);
                 register_block[offset] = value / scale;
             } else if (type == "acc16") {
                 float value = std::stof(points[id]);
-                float scale = SunSpecModel::BlockToScaler(register_block,
+                float scale = SunSpecModel::PointsToScaler(points,
                                                           scaler);
                 register_block[offset] = value / scale;
             } else if (type == "int32") {
                 float value = std::stof(points[id]);
-                float scale = SunSpecModel::BlockToScaler(register_block,
+                float scale = SunSpecModel::PointsToScaler(points,
                                                           scaler);
                 value = value / scale;
                 SunSpecModel::SetUINT32(&register_block,offset, value);
             } else if (type == "float32") {
                 float value = std::stof(points[id]);
-                float scale = SunSpecModel::BlockToScaler(register_block,
+                float scale = SunSpecModel::PointsToScaler(points,
                                                           scaler);
                 value = value / scale;
                 SunSpecModel::SetUINT32(&register_block,offset, value);
             } else if (type == "acc32") {
                 float value = std::stof(points[id]);
-                float scale = SunSpecModel::BlockToScaler(register_block,
+                float scale = SunSpecModel::PointsToScaler(points,
                                                           scaler);
                 value = value / scale;
                 SunSpecModel::SetUINT32(&register_block,offset, value);
@@ -288,9 +288,22 @@ std::vector <uint16_t> SunSpecModel::PointsToBlock (
     return register_block;
 };
 
+// Accessor Methods
+
+unsigned int SunSpecModel::GetLength () {
+    return length_;
+};
+
+unsigned int SunSpecModel::GetOffset () {
+    return offset_;
+};
+
 
 void SunSpecModel::GetScalers() {
+    // if there is no specified scaler then set the scaler to 0 to no change 
+    // the magnitude
     scalers_["default"] = 0;
+
      // Traverse property tree
     BOOST_FOREACH (pt::ptree::value_type const& node,
                    smdx_.get_child ("sunSpecModels.model.block")) {
@@ -323,20 +336,16 @@ float SunSpecModel::BlockToScaler (const std::vector <uint16_t>& register_block,
 // Point To Scaler
 // - this function is just a hack to get non-sunspec complient devices to be
 // - interpreted.
-float SunSpecModel::PointToScaler (std::map <std::string, std::string>& points,
-                                   std::string scaler) {
+float SunSpecModel::PointsToScaler (std::map <std::string, std::string>& points,
+                                    std::string scaler) {
     if (std::isdigit (*scaler.c_str())) {
         return std::stof(scaler);
+    } else if (scaler == "default") {
+        return std::pow(10, scalers_[scaler]);
     } else {
         return std::stof(points[scaler]);
     }
 };
-
-
-void SunSpecModel::DescalePoints (std::map <std::string, std::string>* points) {
-
-};
-
 
 uint32_t SunSpecModel::GetUINT32 (const std::vector <uint16_t>& block,
                                   const unsigned int index) {

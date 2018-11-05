@@ -160,7 +160,17 @@ int main (int argc, char** argv) {
     DistributedEnergyResource *der_ptr = 
         new DistributedEnergyResource (ini_map["DER"]);
 
-    Modbus inverter(ini_map["BMS"]);
+    Modbus bms(ini_map["BMS"]);
+    Modbus inverter(ini_map["Inverter"]);
+
+    cout << "\n\t\tReadModel Test: \n";
+    tsu::string_map points = bms.ReadModel (99001);
+    for (auto& point : points) {
+        cout << point.first << "\t" << point.second << "\n";
+    }
+    
+    cout << "\n\t\tWriteModel Test: \n";
+    bms.WriteModel (99001, points);
 
     cout << "\nProgram initialization complete...\n";
     thread DER(ResourceLoop, der_ptr, stoul(ini_map["DER"]["ThreadPeriod"]));

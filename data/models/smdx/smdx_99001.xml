@@ -1,6 +1,6 @@
 <sunSpecModels v="1">
   <!-- 1: Aquion BMS "hack to make Aquion sunspec complientish -->
-  <model id="64201" len="40" name="bms">
+  <model id="99001" len="40" name="bms">
     <block len="40">
       <point id="rev" offset="0" type="uint16" />
       <point id="firmware" offset="1" type="uint16" />

@@ -22,13 +22,14 @@ public:
                          unsigned int length,
                          const uint16_t *reg_ptr);
 
-    void ReadBlock (std::string name);
+    tsu::string_map ReadModel (const unsigned int did);
 
-    void WriteBlock (std::string name);
+    void WriteModel (const unsigned int did, tsu::string_map model);
 
 private:
+    unsigned int sunspec_key_;
     modbus_t* context_ptr_;
-    std::vector <std::shared_ptr <SunSpecModel>> models_;
+    std::vector <SunSpecModel> models_;
 };
 
 #endif // MODBUS_H_

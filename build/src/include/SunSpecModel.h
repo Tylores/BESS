@@ -28,12 +28,16 @@ public:
         std::map <std::string, std::string>& points
     );
 
+    unsigned int GetLength ();
+
+    unsigned int GetOffset ();
+
     // this operator will be used when looking for specific models
     bool operator == (const unsigned int& did) {
         return did_ == did;
     };
 
-public:
+private:
     // utility methods
     void GetScalers ();
 
@@ -42,12 +46,10 @@ public:
         std::string scaler
     );
 
-    float PointToScaler (
+    float PointsToScaler (
         std::map <std::string, std::string>& points,
         std::string scaler
     );
-
-    void DescalePoints (std::map <std::string, std::string>* points);
 
     // converter registers to larger values
     uint32_t GetUINT32 (const std::vector <uint16_t>& block,
